@@ -3,17 +3,21 @@
 inkscape=true
 gs=true
 imagemagick=true
-gs=true
 pdftops=true
 
 # TODO: allow $1 to be file/directory
 #       - either convert (single file) or iterate through dir
 
-dir="pdf"
+conversion (){
+  # get file name without extension, full path
+  b="${1%%.*}"
+  b=`basename $b`
 
-for i in `ls $dir/*.pdf`; do
-  b="${i%%.*}"
-  echo "\nConverting: $b (Absolute path: `grealpath $i`)"
+  full=`grealpath $1`
+  echo "Converting: $1 (Absolute path: $full)"
+
+  dir="`dirname $full`/converted"
+  mkdir -p $dir
 
   ###  Inkscape
   #
@@ -21,8 +25,7 @@ for i in `ls $dir/*.pdf`; do
   #        Notes :: good conversion, egregious trimming
 
   if [ $inkscape = true ]; then
-    mkdir -p inkscape
-    inkscape `grealpath $dir/$i` --export-eps=`grealpath inkscape`/$b.eps
+    inkscape $full --export-eps=${dir}/${b}_inkscape.eps
     if [ $? -ne 0 ]; then echo "Inkscape failed" && inkscape=false; fi
   fi
 
@@ -33,8 +36,7 @@ for i in `ls $dir/*.pdf`; do
   #        Notes :: nightmarish results
 
   if [ $imagemagick = true ]; then
-    mkdir -p imagemagick
-    convert $dir/$i imagemagick/$b.eps
+    convert $full ${dir}/${b}_imagemagick.eps
     if [ $? -ne 0 ]; then echo "ImageMagick failed" && imagemagick=false; fi
   fi
 
@@ -45,8 +47,7 @@ for i in `ls $dir/*.pdf`; do
   #        Notes :: bravo, good conversion + respects PDF bounding
 
   if [ $gs = true ]; then
-    mkdir -p ghostscript
-    gs -q -dNOCACHE -dNOPAUSE -dBATCH -dSAFER -sDEVICE=eps2write -sOutputFile=ghostscript/$b.eps $dir/$i
+    gs -q -dNOCACHE -dNOPAUSE -dBATCH -dSAFER -sDEVICE=eps2write -sOutputFile=${dir}/${b}_gs.eps $full
     if [ $? -ne 0 ]; then echo "Ghostscript failed" && gs=false; fi
   fi
 
@@ -56,10 +57,23 @@ for i in `ls $dir/*.pdf`; do
   #        Notes :: similar results to ghostscript
 
   if [ $pdftops = true ]; then
-    mkdir -p pdftops
-    pdftops -eps $dir/$i
-    mv $dir/$b.eps pdftops/. 2>/dev/null
+    pdftops -eps $full
+    mv "`dirname $full`/$b.eps" ${dir}/${b}_pdftops.eps 2>/dev/null
     if [ $? -ne 0 ]; then echo "pdftops failed" && pdftops=false; fi
   fi
+}
 
-done
+if [[ -f $1 ]]; then
+  # if a single file
+  conversion $1
+
+# elif [[ -d $1 ]]; then
+#   # else if a directory
+#   for i in `ls $1/*.pdf`; do
+#     conversion $i
+#   done
+
+else
+  echo "Error: pdf2eps [PDF file]"
+  exit 1
+fi
