@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 #!/bin/bash
 
-=======
->>>>>>> origin/master
 # choose which to progs to try:
 inkscape=true
 gs=true
