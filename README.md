@@ -3,19 +3,19 @@ Want to automatically convert a few PDF files to EPS? Turns out there's various 
 
 1. Inkscape
   - [Command-line version](http://wiki.inkscape.org/wiki/index.php/MacOS_X#Inkscape_command_line) required
-  - good conversion, egregious trimming
+  - Good conversion, tight trimming
 
 2. ImageMagick
   - Install with homebrew: `brew install imagemagick`
-  - nightmarish results
+  - Nightmarish results
 
 3. ghostscript
   - Install with homebrew: `brew install ghostscript`
-  - bravo, good conversion + respects PDF bounding
+  - Good conversion + respects PDF bounding
 
 4. pdftops
   - Part of [xpdf](http://www.foolabs.com/xpdf/download.html)
-  - similar results to ghostscript (decent)
+  - Similar decent results to ghostscript
 
 ## Usage
 ```sh
@@ -24,7 +24,7 @@ Want to automatically convert a few PDF files to EPS? Turns out there's various 
 
 ## Requirements
 
-GNU tools should be installed, e.g. `grealpath`. You can get these through homebrew:
+Other than those above, GNU tools should be installed (e.g. `grealpath`). Install these with homebrew:
 ```sh
 brew install coreutils
 ```
