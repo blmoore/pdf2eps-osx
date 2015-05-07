@@ -1,12 +1,8 @@
-
 # choose which to progs to try:
 inkscape=true
 gs=true
 imagemagick=true
 pdftops=true
-
-# TODO: allow $1 to be file/directory
-#       - either convert (single file) or iterate through dir
 
 conversion (){
   # get file name without extension, full path
@@ -20,42 +16,24 @@ conversion (){
   mkdir -p $dir
 
   ###  Inkscape
-  #
-  # OS X install :: http://wiki.inkscape.org/wiki/index.php/MacOS_X#Inkscape_command_line
-  #        Notes :: good conversion, egregious trimming
-
   if [ $inkscape = true ]; then
     inkscape $full --export-eps=${dir}/${b}_inkscape.eps
     if [ $? -ne 0 ]; then echo "Inkscape failed" && inkscape=false; fi
   fi
 
-
   ###  ImageMagick
-  #
-  # OS X install :: brew install imagemagick
-  #        Notes :: nightmarish results
-
   if [ $imagemagick = true ]; then
     convert $full ${dir}/${b}_imagemagick.eps
     if [ $? -ne 0 ]; then echo "ImageMagick failed" && imagemagick=false; fi
   fi
 
-
   ###  ghostscript
-  #
-  # OS X install :: brew install ghostscript
-  #        Notes :: bravo, good conversion + respects PDF bounding
-
   if [ $gs = true ]; then
     gs -q -dNOCACHE -dNOPAUSE -dBATCH -dSAFER -sDEVICE=eps2write -sOutputFile=${dir}/${b}_gs.eps $full
     if [ $? -ne 0 ]; then echo "Ghostscript failed" && gs=false; fi
   fi
 
   ###  pdftops
-  #
-  # OS X install :: part of xpdf (binaries at: http://www.foolabs.com/xpdf/download.html)
-  #        Notes :: similar results to ghostscript
-
   if [ $pdftops = true ]; then
     pdftops -eps $full
     mv "`dirname $full`/$b.eps" ${dir}/${b}_pdftops.eps 2>/dev/null
@@ -74,6 +52,6 @@ if [[ -f $1 ]]; then
 #   done
 
 else
-  echo "Error: pdf2eps [PDF file]"
+  echo "Call: ./pdf2eps [PDF file]"
   exit 1
 fi
