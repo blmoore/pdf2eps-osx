@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # choose which to progs to try:
 inkscape=true
