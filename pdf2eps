@@ -8,8 +8,7 @@ pdftops=true
 
 conversion (){
   # get file name without extension, full path
-  b="${1%%.*}"
-  b=`basename $b`
+  b=`basename -s .pdf $1`
 
   full=`grealpath $1`
   echo "Converting: $1 (Absolute path: $full)"
@@ -47,11 +46,11 @@ if [[ -f $1 ]]; then
   # if a single file
   conversion $1
 
-# elif [[ -d $1 ]]; then
-#   # else if a directory
-#   for i in `ls $1/*.pdf`; do
-#     conversion $i
-#   done
+elif [[ -d $1 ]]; then
+  # else if a directory
+  for i in `ls $1/*.pdf`; do
+    conversion $i
+  done
 
 else
   echo "Call: ./pdf2eps [PDF file]"

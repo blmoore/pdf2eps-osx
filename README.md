@@ -19,7 +19,13 @@ Want to automatically convert a few PDF files to EPS? Turns out there's various 
 
 ## Usage
 ```sh
-./pdf2eps example_file.pdf
+pdf2eps example_file.pdf
+```
+
+Or, to convert all the PDF files in a directory
+
+```sh
+pdf2eps .
 ```
 
 ## Requirements
